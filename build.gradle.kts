@@ -35,7 +35,7 @@ dependencies {
     implementation("com.opencsv:opencsv:5.7.0")
     implementation("org.benf:cfr:0.152")
     implementation(files("libs/procyon.jar"))
-    implementation(files("libs/jd-core-1.1.3.jar")) // I have spent hours on implementing support for an outdated decompiler
+    implementation(files("libs/jd-core-1.2.26.jar")) // I have spent hours on implementing support for an outdated decompiler
     implementation("com.github.fesh0r:fernflower:master") // We want newest version, aren't we?
 
 
@@ -53,4 +53,14 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
+}
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "com.github.wcaleniekubaa.fmd.FMDMain"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree) // OR .map { zipTree(it) }
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
